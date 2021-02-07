@@ -1,48 +1,40 @@
-fetch('https://www.themealdb.com/api/json/v1/1/categories.php')
-.then(res => res.json())
-.then(data => displayMeals(data.categories));
-
-const displayMeals = categories => {
-    const foodDiv = document.getElementById("meal-item");
-    categories.forEach(mealItem => { 
-
-    const mealDiv = document.createElement('div');
-    mealDiv.className = "food-item"
-    const mealInfo = `
-    <div class='food-name'>${mealItem.strCategory}</div>
-    <button class="btn-success" onclick="mealDescription('${mealItem.strCategory}')">Description</button>
-
-    `;
-    mealDiv.innerHTML = mealInfo;
-    foodDiv.appendChild(mealDiv);
-    });
+const searchMeal = () =>{
+    searchText = document.getElementById('search-field').value;
+    const url = `https://www.themealdb.com/api/json/v1/1/list.php?c=list/${searchText}`
+    fetch(url)
+    .then(res => res.json())
+    .then(data => displayMeal(data.meals))
 }
 
-const mealDescription = detail => {
- const url = `https://www.themealdb.com/api/json/v1/1/filter.php?i=chicken_breast`
- console.log(url);
- fetch(url)
- .then(res => res.json())
- .then(data => renderFoodInfo(data.meals));
+const displayMeal = meals =>{
+    const mealContainer = document.getElementById("meal-container");
+    mealContainer.innerHTML = '';
+    meals.forEach(meal => {
+        const foodDiv = document.createElement('div');
+        foodDiv.className = 'single-result'
+        foodDiv.innerHTML =`
+        <div class="round">
+        <h3 >${meal.strCategory}</h3>
+        <img src= "https://www.themealdb.com/images/category/beef.png">
+        
+        </div>
+        <div>
+        <button onclick="getIngradients('${meal.strDescription}')" class="btn-success">Search</button>
+        </div>
+        `
+        mealContainer.appendChild(foodDiv);
+    })
+        
 }
 
-const renderFoodInfo = categories => {
-    const foodDiv = document.getElementById("food-description")
-    foodDiv.innerHTML = `
-    <h1>${mealItem.strCategory}</h1>
-    <p>${mealItem.strMeal}</p>
-    <img src="${mealItem.strMealThumb}">
-    `
-}
+     const getIngradients = (meal) => {
+         const url = `https://www.themealdb.com/api/json/v1/1/list.php?i=list`
+         fetch(url)
+         .then(res => res.json())
+         .then(data => displayDescription(data.meals))
+     }
 
-
-
-
-
-
-
-
-
-
-
-
+     const displayDescription = categories =>{
+         const desDiv = document.getElementById("meal-description")
+        desDiv.innerText = categories;
+     }
